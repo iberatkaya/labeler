@@ -1,14 +1,11 @@
-.container {
-  position: absolute;
-  top: 30%;
-  left: 10px;
+.Home {
   text-align: center;
+  font-size: 4rem;
+  font-weight: 100;
+  letter-spacing: 1.5px;
 }
 
-.container h2 {
-  font-size: 5rem;
-}
-
-.container a {
-  font-size: 1.4rem;
+.Project{
+  font-size: 1rem;
+  color: rgb(220, 220, 220);
 }
