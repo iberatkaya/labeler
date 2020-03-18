@@ -8,13 +8,13 @@ import { bindActionCreators } from 'redux';
 import { setDir } from '../actions/directory'
 import low from 'lowdb';
 import FileSync from 'lowdb/adapters/FileSync';
-import { reverse } from '../utils/array';
 const remote = electron.remote;
 const dialog = remote.dialog;
 
 interface Props extends RouteComponentProps, StateRedux{
   setDir: typeof setDir
 }
+
 
 function Home(props: Props) {
   let [past, setPast] = useState<Array<string>>([]);
@@ -23,7 +23,7 @@ function Home(props: Props) {
       const adapter = new FileSync('db.json');
       const db = low(adapter);
       let hist = db.get('history').value();
-      setPast(hist);
+      setPast(hist.reverse());
     }
     loadFromDB();
   }, []);
@@ -58,7 +58,7 @@ function Home(props: Props) {
       </div>
       <div>
         {
-          reverse(past).map((i) => (
+          past.map((i) => (
             <div>
               <a className={styles.Past}
                 onClick={async () => {
