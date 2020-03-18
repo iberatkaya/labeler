@@ -23,7 +23,12 @@ function Home(props: Props) {
       const adapter = new FileSync('db.json');
       const db = low(adapter);
       let hist = db.get('history').value();
-      setPast(hist.reverse());
+      if(hist === undefined){
+        db.set('history', []).write();
+        console.log('setted');
+      }
+      else
+        setPast(hist.reverse());
     }
     loadFromDB();
   }, []);
@@ -58,8 +63,8 @@ function Home(props: Props) {
       </div>
       <div>
         {
-          past.map((i) => (
-            <div>
+          past.map((i, index) => (
+            <div key={index}>
               <a className={styles.Past}
                 onClick={async () => {
                   props.setDir(i);

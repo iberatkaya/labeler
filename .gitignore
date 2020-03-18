@@ -3,6 +3,7 @@ logs
 *.log
 
 data/
+db.json
 
 # Runtime data
 pids

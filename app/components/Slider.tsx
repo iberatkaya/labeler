@@ -1,54 +1,75 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import styles from './Slider.css';
 import routes from '../constants/routes.json';
-import electron from 'electron';
+import ImageGallery from 'react-image-gallery';
 import { FaChevronCircleLeft } from 'react-icons/fa';
 import fs from 'fs';
 import { connect } from 'react-redux';
+import Button from 'react-bootstrap/Button'
 import { bindActionCreators } from 'redux';
-const image2base64 = require('image-to-base64');
+import path from 'path';
+import { Config } from '../reducers/config';
 const fsp = fs.promises;
 
 interface Props extends RouteComponentProps, StateRedux{
 }
 
 function Slider(props: Props) {
-  const dir = props.directory;
-  const [images, setImages] = useState<Array<string>>([]);
-  
-  useEffect(() => {
-    let loaddata = async () => {
-      const data = await fsp.readdir(dir);
-      let base64data = [];
-      for(let i in data){
-        let str = await image2base64(dir + '/' + data[i]) as string;
-        base64data.push(str);
-      }
-      setImages(base64data as any as string[]);
-    }
-    loaddata()
-  }, [dir]);
+  const [imgIndex, setIndex] = useState<number>(0);
+  let galleryRef = useRef<ImageGallery>(null);
   return (
     <div className={styles.Main}>
-      <div>
+      <div className={styles.Back}>
         <Link to={routes.HOME}><FaChevronCircleLeft size={28} /></Link>
       </div>
-      <div>
-        {
-          images.length === 0 ? <div>Loading...</div> :
-          <div > 
-            <div className={styles.Main}>
-              <a className={styles.Main}>
-                Start
-              </a>
-            </div>
-            <div style={{backgroundColor: 'red', width: 120}}>
-              Found {images.length} images:
-            </div>
-            <p>{images.map((i, index) => <img style={{width: 100, height: 100, padding: 2}} key={index} src={'data:image/jpeg;base64,' + i}/>)}</p>
-          </div>
-        }
+      <div style={{width: '100vw', height: '100vh'}}>
+        <div style={{marginTop: 12, marginRight: 12}}>
+          <ImageGallery
+            ref={galleryRef}
+            items={props.imagePaths.map((i) => ({original: i}))}
+            showThumbnails={false}
+            showPlayButton={false}
+            infinite={false}
+            disableArrowKeys={true}
+            showBullets={false}
+            showNav={false}
+          />
+        </div>
+        <div style={{flexDirection: 'row', display: 'flex', justifyContent: 'space-around', marginTop: 12}}>
+          {props.config.classNames.map((i) => (
+            <Button variant="light" style={{marginRight: 12}}
+              onClick = {async () => {
+                let imageName = await path.parse(props.imagePaths[imgIndex]);
+                await fsp.copyFile(props.imagePaths[imgIndex], path.resolve(props.directory, props.config.outputDir, i, imageName.base));
+                if(imgIndex+1<props.imagePaths.length){
+                  setIndex(imgIndex + 1);
+                  galleryRef.current!.slideToIndex(imgIndex+1);
+                }
+                else{
+                  alert("Finished!");
+                  props.history.replace(routes.HOME)
+                }
+              }}  
+            >
+              {i}
+            </Button>
+          ))}
+          <Button variant="light" style={{marginRight: 12}}
+            onClick = {() => {
+              if(imgIndex+1<props.imagePaths.length){
+                setIndex(imgIndex + 1);
+                galleryRef.current!.slideToIndex(imgIndex+1);
+              }
+              else{
+                alert("Finished!");
+                props.history.replace(routes.HOME)
+              }
+            }}
+          >
+            Skip
+          </Button>
+        </div>
       </div>
     </div>
   );
@@ -56,12 +77,14 @@ function Slider(props: Props) {
 
 
 interface StateRedux {
-  directory: string
+  directory: string,
+  imagePaths: Array<string>,
+  config: Config
 }
 
 const mapStateToProps = (state: StateRedux) => {
-  const { directory } = state;
-  return { directory };
+  const { directory, imagePaths, config } = state;
+  return { directory, imagePaths, config };
 };
 
 const mapDispatchToProps = (dispatch: any) =>

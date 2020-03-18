@@ -1,12 +1,11 @@
 
 .Main {
   overflow-y: scroll; 
-  height: 99vh;
+  height: 100vh;
 }
 
 .Back {
-  margin-left: 0.5rem;
-  margin-top: 0.5rem;
+  margin-top: 0.8rem;
 }
 
 .Start{

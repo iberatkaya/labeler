@@ -3,6 +3,7 @@
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
 @import '~bootstrap/dist/css/bootstrap.min.css';
+@import "~react-image-gallery/styles/css/image-gallery.css";
 
 body {
   position: relative;
@@ -12,7 +13,7 @@ body {
   font-family: Arial, Helvetica, Helvetica Neue, serif;
   overflow-y: hidden;
   user-select: none;
-  margin: 8px;
+  padding-left: 8px;
 }
 
 h2 {

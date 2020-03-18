@@ -2,44 +2,47 @@ import React, {useState, useEffect} from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import styles from './Label.css';
 import routes from '../constants/routes.json';
-import electron from 'electron';
 import { FaChevronCircleLeft, FaPlayCircle } from 'react-icons/fa';
 import fs from 'fs';
 import { setClass, setConfig, setOutput } from '../actions/config';
+import { setImagePaths } from '../actions/images';
 import Form from 'react-bootstrap/Form'
+import path from 'path';
+import isImage from 'is-image';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Config } from '../reducers/config';
-const image2base64 = require('image-to-base64');
 const fsp = fs.promises;
 
 interface Props extends RouteComponentProps, StateRedux{
-  setClass: typeof setClass
-  setConfig: typeof setConfig
-  setOutput: typeof setOutput
+  setClass: typeof setClass,
+  setConfig: typeof setConfig,
+  setOutput: typeof setOutput,
+  setImagePaths: typeof setImagePaths
 }
 
 function Label(props: Props) {
   const dir = props.directory;
   const config = props.config;
-  const [images, setImages] = useState<Array<string>>([]);
   const [numOfClasses, setNumOfClasses] = useState<number>(2);
   const [error, setError] = useState<boolean>(false);
-  console.log(props.config);
   useEffect(() => {
     let loaddata = async () => {
       try{
         props.setClass([...Array(numOfClasses)].map(() => ''));
         const data = await fsp.readdir(dir);
-        let base64data = [];
+        let paths = [];
         for(let i in data){
-          let str = await image2base64(dir + '/' + data[i]) as string;
-          base64data.push(str);
+          let stat = await fsp.stat(path.resolve(dir, data[i]));
+          if(stat.isFile() && isImage(data[i])){
+            paths.push(path.resolve(dir, data[i]));
+          }
         }
-        if(base64data.length === 0)
+        if(paths.length === 0)
           setError(true);
-        else
-          setImages(base64data as any as string[]);
+        else{
+          props.setImagePaths(paths);
+        }
       }catch(e){
         console.log(e);
         setError(true);
@@ -50,7 +53,7 @@ function Label(props: Props) {
   if(error){
     return (
       <div className={styles.Main}>
-        <div>
+        <div className={styles.Back}>
           <Link to={routes.HOME}><FaChevronCircleLeft size={28} /></Link>
         </div>
         <div>
@@ -66,10 +69,42 @@ function Label(props: Props) {
       </div>
       <div>
         {
-          images.length === 0 ? <div>Loading...</div> :
+          props.imagePaths.length === 0 ? <div>Loading...</div> :
           <div > 
             <div className={styles.Center}>
-              <a>
+              <a
+              onClick = { async () => {
+                let empty = false;
+                for(let i=0; i<props.config.classNames.length; i++){
+                  if(props.config.classNames[i] === ''){
+                    empty = true;
+                    break;
+                  }
+                }
+                if(props.config.outputDir === '' || empty){
+                  alert('Please fill all inputs!');
+                  return;
+                }
+                let same = false;
+                for(let i=0; i<props.config.classNames.length; i++){
+                  for(let j=i+1; j<props.config.classNames.length; j++){
+                    if(props.config.classNames[i] === props.config.classNames[j]){
+                      same = true;
+                      break;
+                    }
+                  }
+                }
+                if(same){
+                  alert('Classes cannot have the same name!');
+                  return;
+                }
+                await createDir(path.resolve(props.directory, props.config.outputDir));
+                for(let i=0; i<props.config.classNames.length; i++){
+                  await createDir(path.resolve(props.directory, props.config.outputDir, props.config.classNames[i]));
+                }
+                props.history.push(routes.SLIDER);
+              }}
+              >
                 <FaPlayCircle size="4rem" className={styles.Start}/>
               </a>
             </div>
@@ -80,7 +115,7 @@ function Label(props: Props) {
               </Form.Group>
               <Form.Group>
                 <Form.Label>Number Of Classes:</Form.Label>
-                <Form.Control type="number" value={numOfClasses.toString()}  min={2} 
+                <Form.Control type="number" value={numOfClasses.toString()}  min={2} max={100}
                   onChange={(e: React.FormEvent<HTMLInputElement>) => {
                     let num = parseInt(e.currentTarget.value);
                     setNumOfClasses(num); 
@@ -90,7 +125,7 @@ function Label(props: Props) {
               <div style={{display: 'flex', flexWrap: 'wrap'}}>
                 {
                   config.classNames.map((i, index) => (
-                    <Form.Group style={{marginRight: 12}}>
+                    <Form.Group key={index} style={{marginRight: 12}}>
                       <Form.Label>Class {index+1}:</Form.Label>
                       <Form.Control type="text" value={i} onChange={(e: React.FormEvent<HTMLInputElement>) => {  
                         let classNames = config.classNames;
@@ -103,9 +138,9 @@ function Label(props: Props) {
               </div>
             </Form>
             <div>
-              Found {images.length} images:
+              Found {props.imagePaths.length} images:
             </div>
-            <p>{images.map((i, index) => <img style={{width: 100, height: 100, padding: 2}} key={index} src={'data:image/jpeg;base64,' + i}/>)}</p>
+            <p>{props.imagePaths.map((i, index) => <img style={{width: 100, height: 100, padding: 2}} key={index} src={i}/>)}</p>
           </div>
         }
       </div>
@@ -116,12 +151,13 @@ function Label(props: Props) {
 
 interface StateRedux {
   directory: string,
-  config: Config
+  config: Config,
+  imagePaths: Array<string>
 }
 
 const mapStateToProps = (state: StateRedux) => {
-  const { directory, config } = state;
-  return { directory, config };
+  const { directory, config, imagePaths } = state;
+  return { directory, config, imagePaths };
 };
 
 const mapDispatchToProps = (dispatch: any) =>
@@ -129,9 +165,20 @@ const mapDispatchToProps = (dispatch: any) =>
       {
         setClass, 
         setConfig, 
-        setOutput 
+        setOutput,
+        setImagePaths 
       },
       dispatch
   );
 
 export default connect(mapStateToProps, mapDispatchToProps)(Label);
+
+let createDir = async (path: string) => {
+  try {
+      await fsp.access(path);
+    }
+  catch (e) {
+      if (e.code === "ENOENT")
+          await fsp.mkdir(path);
+  }
+}
