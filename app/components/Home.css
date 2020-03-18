@@ -1,3 +1,9 @@
+.Main {
+  margin-top: 0.5rem;
+  margin-right: 2rem;
+  margin-left: 2rem;
+}
+
 .Home {
   text-align: center;
   font-size: 4rem;
@@ -5,7 +11,12 @@
   letter-spacing: 1.5px;
 }
 
-.Project{
+.Project {
+  font-size: 1.4rem;
+  margin-bottom: 6px;
+}
+
+.Past {
   font-size: 1rem;
-  color: rgb(220, 220, 220);
+  color: #bbbbbb;
 }

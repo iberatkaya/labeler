@@ -8,6 +8,7 @@ import { bindActionCreators } from 'redux';
 import { setDir } from '../actions/directory'
 import low from 'lowdb';
 import FileSync from 'lowdb/adapters/FileSync';
+import { reverse } from '../utils/array';
 const remote = electron.remote;
 const dialog = remote.dialog;
 
@@ -21,7 +22,6 @@ function Home(props: Props) {
     let loadFromDB = async () => {
       const adapter = new FileSync('db.json');
       const db = low(adapter);
-//      db.set('history', ["test"]).write();
       let hist = db.get('history').value();
       setPast(hist);
     }
@@ -29,22 +29,44 @@ function Home(props: Props) {
   }, []);
 
   return (
-    <div>
+    <div className={styles.Main}>
       <h2 className={styles.Home}>Labeler</h2>
-      <a className={styles.Project}
-        onClick={async () => {
-          let res = await dialog.showOpenDialog({ properties: ['openDirectory'] })
-          props.setDir(res.filePaths[0]);
-          props.history.push(routes.LABEL)
+      <div className={styles.Project}>
+        <a
+          onClick={async () => {
+            const adapter = new FileSync('db.json');
+            const db = low(adapter);
+            let res = await dialog.showOpenDialog({ properties: ['openDirectory'] })
+            props.setDir(res.filePaths[0]);
+            let hist = db.get('history').value();
+            let exists = false;
+            for(let i in hist){
+              if(hist[i] === res.filePaths[0]){
+                exists = true;
+                break;
+              }
+            }
+            if(!exists){
+              hist.push(res.filePaths[0]);
+              console.log(hist);
+              db.set('history', hist).write();
+              setPast(hist);
+            }    
+            props.history.push(routes.LABEL); 
           }}
-      >Open a project</a>
+        >Open a project</a>
+      </div>
       <div>
         {
-          past.map((i) => (
-            <a className={styles.Project}
-              onClick={async () => {
+          reverse(past).map((i) => (
+            <div>
+              <a className={styles.Past}
+                onClick={async () => {
+                  props.setDir(i);
+                  props.history.push(routes.LABEL); 
                 }}
-              >{i}</a>
+                >{i}</a>
+              </div>
           ))
         }
       </div>

@@ -12,16 +12,3 @@ export function setDir(path: string) {
 export interface setDirAction extends Action {
   payload: string
 }
-
-export const SET_PASTDIR = 'SET_PASTDIR';
-
-export function setPastDir(path: Array<string>) {
-  return {
-    type: SET_PASTDIR,
-    payload: path
-  };
-}
-
-export interface setPastDirAction extends Action {
-  payload: Array<string>
-}

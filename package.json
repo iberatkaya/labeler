@@ -274,6 +274,7 @@
   "dependencies": {
     "@hot-loader/react-dom": "^16.12.0",
     "@types/lowdb": "^1.0.9",
+    "bootstrap": "^4.4.1",
     "connected-react-router": "^6.6.1",
     "core-js": "^3.6.4",
     "devtron": "^1.4.0",
@@ -284,6 +285,7 @@
     "image-to-base64": "^2.0.1",
     "lowdb": "^1.0.0",
     "react": "^16.12.0",
+    "react-bootstrap": "^1.0.0-beta.17",
     "react-dom": "^16.12.0",
     "react-hot-loader": "^4.12.19",
     "react-icons": "^3.9.0",

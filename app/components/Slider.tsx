@@ -30,7 +30,7 @@ function Slider(props: Props) {
     loaddata()
   }, [dir]);
   return (
-    <div className={styles.main}>
+    <div className={styles.Main}>
       <div>
         <Link to={routes.HOME}><FaChevronCircleLeft size={28} /></Link>
       </div>
@@ -38,8 +38,8 @@ function Slider(props: Props) {
         {
           images.length === 0 ? <div>Loading...</div> :
           <div > 
-            <div className={styles.main}>
-              <a className={styles.main}>
+            <div className={styles.Main}>
+              <a className={styles.Main}>
                 Start
               </a>
             </div>

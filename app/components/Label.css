@@ -1,20 +1,29 @@
 
-.main {
+.Main {
   overflow-y: scroll; 
   height: 99vh;
 }
 
-.start{
-  background-color: #FF0000;
-  color: #fff;
-  padding: 12px;
-  font-size: 24px;
-  border-radius: 12px;
-  opacity: 0.92;
+.Back {
+  margin-left: 0.5rem;
+  margin-top: 0.5rem;
 }
 
-.center{
+.Start{
+  background-color: #FF0000;
+  color: #fff;
+  padding: 1rem;
+  border-radius: 12px;
+  opacity: 0.92;
+  margin-bottom: 12px;
+}
+
+.Center{
   align-items: center;
   justify-content: center;
   text-align: center;
+}
+
+input {
+  width: 12rem !important;
 }
