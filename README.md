@@ -6,7 +6,9 @@
 > Labeler is an Electron App that helps users label images. Simply open a directory, select your output folder name and class names, and begin labeling. Labeler will automatically copy your labeled images to the desired output folder.
 
 <center>
-![Screenshot](https://raw.githubusercontent.com/iberatkaya/labeler/master/images/ss1.png =400x320) ![Screenshot](https://raw.githubusercontent.com/iberatkaya/labeler/master/images/ss2.png =400x320)
+![Screenshot](https://raw.githubusercontent.com/iberatkaya/labeler/master/images/ss1.png =400x320)
+
+![Screenshot](https://raw.githubusercontent.com/iberatkaya/labeler/master/images/ss2.png =400x320)
 
 ![Screenshot](https://raw.githubusercontent.com/iberatkaya/labeler/master/images/ss3.png =400x320)
 </center>
