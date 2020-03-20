@@ -16,12 +16,16 @@ interface Props extends RouteComponentProps, StateRedux{
 }
 
 function Slider(props: Props) {
-  const [imgIndex, setIndex] = useState<number>(0);
+  const [imgIndex, setIndex] = useState<number>(props.config.index);
+  console.log(props.config);
   let galleryRef = useRef<ImageGallery>(null);
+  useEffect(() => {
+    galleryRef.current!.slideToIndex(imgIndex);
+  }, []);
   return (
     <div className={styles.Main}>
       <div className={styles.Back}>
-        <Link to={routes.HOME}><FaChevronCircleLeft size={28} /></Link>
+        <Link to={routes.LABEL}><FaChevronCircleLeft size={28} /></Link>
       </div>
       <div style={{width: '100vw', height: '100vh'}}>
         <div style={{marginTop: 12, marginRight: 12}}>

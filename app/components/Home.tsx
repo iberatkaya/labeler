@@ -32,7 +32,6 @@ function Home(props: Props) {
     }
     loadFromDB();
   }, []);
-
   return (
     <div className={styles.Main}>
       <h2 className={styles.Home}>Labeler</h2>
@@ -63,7 +62,7 @@ function Home(props: Props) {
       </div>
       <div>
         {
-          past.map((i, index) => (
+          past.slice(0, 7).map((i, index) => (
             <div key={index}>
               <a className={styles.Past}
                 onClick={async () => {

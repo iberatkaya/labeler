@@ -39,3 +39,16 @@ export function setClass(classes: Array<string>) {
 export interface setClassAction extends Action {
   payload: Array<string>
 }
+
+export const SET_INDEX = 'SET_INDEX';
+
+export function setIndex(index: number) {
+  return {
+    type: SET_INDEX,
+    payload: index
+  };
+}
+
+export interface setIndexAction extends Action {
+  payload: number
+}

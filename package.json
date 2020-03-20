@@ -1,8 +1,8 @@
 {
-  "name": "electron-react-boilerplate",
-  "productName": "ElectronReact",
-  "version": "1.1.0",
-  "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
+  "name": "labeler",
+  "productName": "Labeler",
+  "version": "1.0.3",
+  "description": "Labeler is an Electron App that helps users label images.",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
     "build-dll": "cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dev.dll.babel.js --colors",
@@ -10,6 +10,7 @@
     "build-main": "cross-env NODE_ENV=production webpack --config ./configs/webpack.config.main.prod.babel.js --colors",
     "build-renderer": "cross-env NODE_ENV=production webpack --config ./configs/webpack.config.renderer.prod.babel.js --colors",
     "dev": "cross-env START_HOT=1 node -r @babel/register ./internals/scripts/CheckPortInUse.js && cross-env START_HOT=1 yarn start-renderer-dev",
+    "dist": "electron-builder --linux snap",
     "electron-rebuild": "electron-rebuild --parallel --force --types prod,dev,optional --module-dir app",
     "ts": "tsc",
     "lint": "cross-env NODE_ENV=development eslint . --cache --ext .js,.jsx,.ts,.tsx",
@@ -21,6 +22,8 @@
     "package-ci": "yarn postinstall && yarn build && electron-builder --publish always",
     "package-mac": "yarn build && electron-builder build --mac",
     "package-linux": "yarn build && electron-builder build --linux",
+    "package-linux-snap-nodb": "yarn build && electron-builder build --linux snap",
+    "package-linux-snap": "rm db.json && yarn build && electron-builder build --linux snap",
     "package-win": "yarn build && electron-builder build --win --x64",
     "postinstall": "node -r @babel/register internals/scripts/CheckNativeDep.js && electron-builder install-app-deps && yarn build-dll && opencollective-postinstall",
     "postlint-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.{js,jsx,json,html,css,less,scss,yml}'",
@@ -52,8 +55,8 @@
     ]
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.develar.ElectronReact",
+    "productName": "Labeler",
+    "appId": "com.kaya.labeler",
     "files": [
       "dist/",
       "node_modules/",
@@ -96,49 +99,26 @@
     },
     "publish": {
       "provider": "github",
-      "owner": "electron-react-boilerplate",
-      "repo": "electron-react-boilerplate",
+      "owner": "iberatkaya",
+      "repo": "iberatkaya",
       "private": false
     }
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
+    "url": "git+https://github.com/iberatkaya/labeler.git"
   },
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
+    "name": "iberatkaya",
+    "email": "ibraberatkaya@gmail.com"
   },
-  "contributors": [
-    {
-      "name": "Vikram Rangaraj",
-      "email": "vikr01@icloud.com",
-      "url": "https://github.com/vikr01"
-    },
-    {
-      "name": "Amila Welihinda",
-      "email": "amilajack@gmail.com",
-      "url": "https://github.com/amilajack"
-    }
-  ],
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
-  },
   "keywords": [
-    "electron",
-    "boilerplate",
-    "react",
-    "redux",
-    "typescript",
-    "ts",
-    "sass",
-    "webpack",
-    "hot",
-    "reload"
+    "Machine learning",
+    "Data",
+    "Label",
+    "Label Data"
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
   "jest": {
     "testURL": "http://localhost/",
     "moduleNameMapper": {

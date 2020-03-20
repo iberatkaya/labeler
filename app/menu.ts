@@ -195,11 +195,11 @@ export default class MenuBuilder {
     const templateDefault = [
       {
         label: '&File',
-        submenu: [
+        submenu: [/* 
           {
             label: '&Open',
             accelerator: 'Ctrl+O'
-          },
+          }, */
           {
             label: '&Close',
             accelerator: 'Ctrl+W',
@@ -253,7 +253,7 @@ export default class MenuBuilder {
       },
       {
         label: 'Help',
-        submenu: [
+        submenu: [/* 
           {
             label: 'Learn More',
             click() {
@@ -273,11 +273,11 @@ export default class MenuBuilder {
             click() {
               shell.openExternal('https://www.electronjs.org/community');
             }
-          },
+          }, */
           {
             label: 'Search Issues',
             click() {
-              shell.openExternal('https://github.com/electron/electron/issues');
+              shell.openExternal('https://github.com/iberatkaya/labeler/issues');
             }
           }
         ]

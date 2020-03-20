@@ -1,11 +1,12 @@
-import { SET_CONFIG, SET_OUTPUT, SET_CLASS, setOutputAction, setClassAction, setConfigAction } from '../actions/config';
+import { SET_CONFIG, SET_OUTPUT, SET_CLASS, SET_INDEX, setOutputAction, setClassAction, setConfigAction, setIndexAction } from '../actions/config';
 
 export interface Config {
   outputDir: string,
-  classNames: Array<string>
+  classNames: Array<string>,
+  index: number
 }
 
-export function config(state: Config = {outputDir: '', classNames: []}, action: setConfigAction | setOutputAction | setClassAction) {
+export function config(state: Config = {outputDir: '', classNames: [], index: 0}, action: setConfigAction | setOutputAction | setClassAction | setIndexAction) {
   switch (action.type) {
     case SET_CONFIG:
       let configPayload = (action as setConfigAction).payload;
@@ -20,6 +21,11 @@ export function config(state: Config = {outputDir: '', classNames: []}, action: 
       let classState = {...state};
       classState.classNames = classPayload;
       return classState;
+    case SET_INDEX:
+      let indexPayload = (action as setIndexAction).payload;
+      let indexState = {...state};
+      indexState.index = indexPayload;
+      return indexState;
     default:
       return state;
   }

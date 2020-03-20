@@ -1,13 +1,12 @@
 {
-  "name": "electron-react-boilerplate",
-  "productName": "electron-react-boilerplate",
-  "version": "1.1.0",
-  "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
+  "name": "labeler",
+  "productName": "Labeler",
+  "version": "1.0.3",
+  "description": "Labeler is an Electron App that helps users label images.",
   "main": "./main.prod.js",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://github.com/electron-react-boilerplate"
+    "name": "iberatkaya",
+    "email": "ibraberatkaya@gmail.com"
   },
   "scripts": {
     "electron-rebuild": "node -r ../internals/scripts/BabelRegister.js ../internals/scripts/ElectronRebuild.js",

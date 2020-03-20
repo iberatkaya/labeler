@@ -4,7 +4,7 @@ import styles from './Label.css';
 import routes from '../constants/routes.json';
 import { FaChevronCircleLeft, FaPlayCircle } from 'react-icons/fa';
 import fs from 'fs';
-import { setClass, setConfig, setOutput } from '../actions/config';
+import { setClass, setConfig, setOutput, setIndex } from '../actions/config';
 import { setImagePaths } from '../actions/images';
 import Form from 'react-bootstrap/Form'
 import path from 'path';
@@ -18,6 +18,7 @@ interface Props extends RouteComponentProps, StateRedux{
   setClass: typeof setClass,
   setConfig: typeof setConfig,
   setOutput: typeof setOutput,
+  setIndex: typeof setIndex,
   setImagePaths: typeof setImagePaths
 }
 
@@ -25,6 +26,7 @@ function Label(props: Props) {
   const dir = props.directory;
   const config = props.config;
   const [numOfClasses, setNumOfClasses] = useState<number>(2);
+  const [imgSize, setImgSize] = useState<number>(100);
   const [error, setError] = useState<boolean>(false);
   useEffect(() => {
     let loaddata = async () => {
@@ -69,8 +71,11 @@ function Label(props: Props) {
       </div>
       <div>
         {
-          props.imagePaths.length === 0 ? <div>Loading...</div> :
+          props.imagePaths.length === 0 ? <div className={styles.Center} style={{fontSize: 32}}>Loading...</div> :
           <div > 
+            <div style={{textAlign: 'center', marginBottom: 8}}>
+              Select your output folder and class names, press the start button to begin labeling.<br/>Press an image to start labeling from that specific image.
+            </div>
             <div className={styles.Center}>
               <a
               onClick = { async () => {
@@ -102,10 +107,11 @@ function Label(props: Props) {
                 for(let i=0; i<props.config.classNames.length; i++){
                   await createDir(path.resolve(props.directory, props.config.outputDir, props.config.classNames[i]));
                 }
+                props.setIndex(0);
                 props.history.push(routes.SLIDER);
               }}
               >
-                <FaPlayCircle size="4rem" className={styles.Start}/>
+                <FaPlayCircle size="4.5rem" className={styles.Start}/>
               </a>
             </div>
             <Form>
@@ -137,15 +143,63 @@ function Label(props: Props) {
                 }
               </div>
             </Form>
-            <div>
-              Found {props.imagePaths.length} images:
-            </div>
-            <p>{props.imagePaths.map((i, index) => <img style={{width: 100, height: 100, padding: 2}} key={index} src={i}/>)}</p>
+            <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8}}>
+              Found {props.imagePaths.length} images: 
+              <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+                  <Form.Label style={{marginBottom: 0}}>Display Size</Form.Label>
+                  <Form.Control value={imgSize.toString()} onChange={(e) => setImgSize(parseInt(e.currentTarget.value))} as="select" style={{width: 80, marginLeft: 12, marginRight: 12}}>
+                    <option>50</option>
+                    <option>100</option>
+                    <option>150</option>
+                    <option>200</option>
+                    <option>250</option>
+                  </Form.Control>
+                  </div>
+              </div>
+            {props.imagePaths.map((i, index) => <a style={{padding: 2}}><img style={{border: '1px solid #ccc', width: imgSize, height: imgSize, margin: 2}}key={index} src={i} onClick={async () => {
+              let res = await checkIfOkay(props);
+              if(res){
+                props.setIndex(index);
+                props.history.push(routes.SLIDER);
+              }
+            }}/></a>)}
           </div>
         }
       </div>
     </div>
   );
+}
+
+async function checkIfOkay(props: Props){
+  let empty = false;
+  for(let i=0; i<props.config.classNames.length; i++){
+    if(props.config.classNames[i] === ''){
+      empty = true;
+      break;
+    }
+  }
+  if(props.config.outputDir === '' || empty){
+    alert('Please fill all inputs!');
+    return false;
+  }
+  let same = false;
+  for(let i=0; i<props.config.classNames.length; i++){
+    for(let j=i+1; j<props.config.classNames.length; j++){
+      if(props.config.classNames[i] === props.config.classNames[j]){
+        same = true;
+        break;
+      }
+    }
+  }
+  if(same){
+    alert('Classes cannot have the same name!');
+    return false;
+  }
+  await createDir(path.resolve(props.directory, props.config.outputDir));
+  for(let i=0; i<props.config.classNames.length; i++){
+    await createDir(path.resolve(props.directory, props.config.outputDir, props.config.classNames[i]));
+  }
+  return true;
 }
 
 
@@ -166,7 +220,8 @@ const mapDispatchToProps = (dispatch: any) =>
         setClass, 
         setConfig, 
         setOutput,
-        setImagePaths 
+        setImagePaths,
+        setIndex
       },
       dispatch
   );
