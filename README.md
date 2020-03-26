@@ -20,7 +20,7 @@
 
 * Windows
 
-  * Install from <a href="https://raw.githubusercontent.com/iberatkaya/labeler/master/releases/windows/Labeler%20Setup%201.0.3.exe">binary</a>.
+  * Install from <a href="https://github.com/iberatkaya/labeler/releases/download/1.0.3/Labeler.Setup.1.0.3.exe">binary</a>.
 
 ## Author
 
