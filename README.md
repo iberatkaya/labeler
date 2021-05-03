@@ -3,7 +3,7 @@
   <img alt="Version" src="https://img.shields.io/badge/version-1.0.3-blue.svg?cacheSeconds=2592000" />
 </p>
 
-> Labeler is an Electron App that helps users label images. Simply open a directory, select your output folder name and class names, and begin labelling. Labeler will automatically copy your labeled images to the desired output folder.
+Labeler is an Electron App that helps users label images. Simply open a directory, select your output folder name and class names, and begin labelling. Labeler will automatically copy your labeled images to the desired output folder.
 
 <p align="center">
     <img alt="Screenshot" src="https://raw.githubusercontent.com/iberatkaya/labeler/master/images/ss1.png" width="400" height="320">
